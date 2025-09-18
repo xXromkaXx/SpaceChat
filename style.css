@@ -376,31 +376,18 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .chat-container {
-        flex-direction: column;
-    }
-
-    .online-users {
-        width: 100%;
-        height: auto;
-        max-height: 200px;
-        margin-bottom: 10px;
-        display: none; /* ховаємо по дефолту */
-    }
-
-    .online-users.active {
-        display: block; /* показуємо тільки коли відкрито */
-    }
-
-    .toggle-users-btn {
-        display: block;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 12px;
-        margin-bottom: 10px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+    .chat-container{flex-direction:column;height:auto}
+    .online-users{display:none} /* ховаємо бокову панель в основному потоці */
+    .toggle-users-btn{display:inline-block;background:linear-gradient(90deg,#4facfe 0%,#00f2fe 100%);color:#fff;border:none;padding:10px;border-radius:12px;margin-bottom:10px;font-weight:700;cursor:pointer}
 }
+
+/* --- OVERLAY для мобільного (повноекранний і простий) --- */
+.users-overlay{
+    display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;padding:20px;
+}
+.users-overlay.active{display:flex}
+.overlay-content{width:100%;max-width:48px;background:rgba(0,20,40,.95);border-radius:12px;padding:16px;border:1px solid rgba(80,130,200,.2)}
+.overlay-content .online-users{width:100%;background:transparent;padding:0;border:none}
+.close-users-btn{position:absolute;right:18px;top:18px;background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer}
+.overlay-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+body.no-scroll{overflow:hidden}
