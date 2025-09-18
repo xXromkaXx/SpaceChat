@@ -208,6 +208,7 @@
         }
 
         // Прослуховування змін у колекції користувачів
+        // Прослуховування змін у колекції користувачів
         function setupUsersListener() {
             unsubscribeUsers = db.collection('users')
                 .onSnapshot(snapshot => {
@@ -215,7 +216,7 @@
                     snapshot.forEach(doc => {
                         usersArray.push(doc.id);
                     });
-                    updateUserList(usersArray);
+                    updateUserList(usersArray); // <-- викликаємо тут
                 }, error => {
                     console.error('Помилка отримання списку користувачів: ', error);
                 });
@@ -328,17 +329,18 @@
 
         usersArray.forEach(user => {
             const li = `
-      <li class="user-item">
-        <div class="user-avatar-sm"><i class="fas fa-user-astronaut"></i></div>
-        <div>${user}</div>
-        <div class="online-indicator"></div>
-      </li>`;
+        <li class="user-item">
+            <div class="user-avatar-sm"><i class="fas fa-user-astronaut"></i></div>
+            <div>${user}</div>
+            <div class="online-indicator"></div>
+        </li>`;
             userList.insertAdjacentHTML('beforeend', li);
             mobileUserList.insertAdjacentHTML('beforeend', li);
         });
 
         onlineCount.textContent = usersArray.length;
     }
+
 
 </script>
 </body>
