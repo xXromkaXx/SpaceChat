@@ -42,19 +42,16 @@
         <button id="loginBtn" class="login-btn">Увійти до чату</button>
     </div>
 
-    <div class="chat-container" id="chatContainer">
-        <div class="online-users">
-            <h3>Космонавти онлайн</h3>
-            <ul class="user-list" id="userList">
-                <li class="user-item">
-                    <div class="user-avatar-sm">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <div>Центр управління</div>
-                    <div class="online-indicator"></div>
-                </li>
-            </ul>
+    <!-- Overlay для мобільного -->
+    <div class="users-overlay" id="usersOverlay">
+        <div class="overlay-content">
+            <div class="overlay-header">
+                <h3>Космонавти онлайн</h3>
+                <button id="closeUsers" class="close-users-btn">✕</button>
+            </div>
+            <ul class="user-list" id="mobileUserList"></ul>
         </div>
+    </div>
         <button id="toggleUsers" class="toggle-users-btn">👨‍🚀 Онлайн</button>
 
         <div class="chat-main">
@@ -308,12 +305,39 @@
     });
 
     const toggleUsersBtn = document.getElementById('toggleUsers');
-    const onlineUsersBlock = document.querySelector('.online-users');
+    const usersOverlay = document.getElementById('usersOverlay');
+    const closeUsersBtn = document.getElementById('closeUsers');
+    const userList = document.getElementById('userList');           // десктоп
+    const mobileUserList = document.getElementById('mobileUserList');
+    // відкриття списку
+    toggleUsersBtn.addEventListener('click', () => {
+        usersOverlay.classList.add('active');
+        document.body.style.overflow = "hidden";
+    });
 
-    if (toggleUsersBtn) {
-        toggleUsersBtn.addEventListener('click', () => {
-            onlineUsersBlock.classList.toggle('active');
+    // закриття списку
+    closeUsersBtn.addEventListener('click', () => {
+        usersOverlay.classList.remove('active');
+        document.body.style.overflow = "";
+    });
+
+    // коли оновлюєш юзерів, оновлюй обидва списки
+    function updateUserList(usersArray) {
+        userList.innerHTML = '';
+        mobileUserList.innerHTML = '';
+
+        usersArray.forEach(user => {
+            const li = `
+      <li class="user-item">
+        <div class="user-avatar-sm"><i class="fas fa-user-astronaut"></i></div>
+        <div>${user}</div>
+        <div class="online-indicator"></div>
+      </li>`;
+            userList.insertAdjacentHTML('beforeend', li);
+            mobileUserList.insertAdjacentHTML('beforeend', li);
         });
+
+        onlineCount.textContent = usersArray.length;
     }
 
 </script>
