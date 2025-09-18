@@ -104,7 +104,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const loginSection = document.getElementById('loginSection');
-        const chatContainer = document.getElementById('chatContainer');
+
+        const chatContainer = document.querySelector('.chat-main');
+
         const usernameInput = document.getElementById('usernameInput');
         const loginBtn = document.getElementById('loginBtn');
         const messageInput = document.getElementById('messageInput');
@@ -208,7 +210,6 @@
         }
 
         // Прослуховування змін у колекції користувачів
-        // Прослуховування змін у колекції користувачів
         function setupUsersListener() {
             unsubscribeUsers = db.collection('users')
                 .onSnapshot(snapshot => {
@@ -216,17 +217,18 @@
                     snapshot.forEach(doc => {
                         usersArray.push(doc.id);
                     });
-                    updateUserList(usersArray); // <-- викликаємо тут
+                    updateUserList(usersArray);
                 }, error => {
                     console.error('Помилка отримання списку користувачів: ', error);
                 });
         }
 
-        // Обробка входу в чат
         loginBtn.addEventListener('click', function() {
             username = usernameInput.value.trim();
+            // робимо імʼя "безпечним" для Firestore
+            username = username.replace(/[.#$/\[\]]/g, "_");
+
             if (username) {
-                // Додаємо користувача до Firestore
                 db.collection('users').doc(username).set({
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }).then(() => {
@@ -235,25 +237,22 @@
                     userInfo.querySelector('div').textContent = username;
                     userInfo.querySelector('.contact-status').textContent = 'В мережі';
 
-                    // Налаштовуємо прослуховувачі
                     setupMessagesListener();
                     setupUsersListener();
-
-                    // Оновлюємо статус підключення
                     updateConnectionStatus(true);
 
-                    // Додаємо системне повідомлення про підключення
                     db.collection('messages').add({
                         sender: 'Система',
                         text: `${username} приєднався до чату`,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }).catch(error => {
-                    console.error('Помилка додавання користувача: ', error);
-                    alert('Помилка входу в чат. Спробуйте інше ім\'я.');
+                    console.error('Firestore каже:', error);  // 🔥 тут буде точна причина
+                    alert('Помилка входу в чат: ' + error.message);
                 });
             }
         });
+
 
         // Обробка відправки повідомлення
         sendButton.addEventListener('click', sendMessage);
